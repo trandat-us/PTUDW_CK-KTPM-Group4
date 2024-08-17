@@ -1,0 +1,572 @@
+<!-- fa icons -->
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.1/css/all.min.css">
+<body>
+    <div class="container mt-5">
+        {{#each requirement_types}}
+        <div class="requirement-item">
+            <label for="checkbox{{this.name}}" class="d-flex align-items-center">
+                <input class="form-check-input me-2" type="checkbox" value="1" id="checkbox{{this.name}}" checked>
+                {{this.name}}
+            </label>
+        </div>
+        {{/each}}
+    </div>
+
+    <!-- Release Cards -->
+    <div class="container-fluid mt-3">
+        <div class="card custom-card">
+            <!-- Header of card -->
+            <div class="card-header bg-white border-0 align-items-center">
+                <div class="row">
+                    <div class="col-sm-4">
+                        <a onclick="addReleaseCards('all')" style="cursor: pointer;">
+                            <h3 class="card-title" id="releaseStatus">All Releases</h3>
+                        </a>
+                    </div>
+                    <div class="col-sm-8 d-flex justify-content-end">
+                        <div class="releases">
+                            <ul class="list-unstyled d-flex flex-row">
+                                <li class="me-4 clickable" id="openReleases">
+                                    <a id="countOpenRelease" onclick="addReleaseCards('open');" style="cursor: pointer; color: cornflowerblue;">● 2 Open Release(s)</a>
+                                </li>
+                                <li class="me-4 clickable" id="upcomingReleases">
+                                    <a id="countUpcomingRelease" onclick="addReleaseCards('upcoming');" style="cursor: pointer; color: tan;">● 0 Upcoming Release(s)</a>
+                                </li>
+                                <li class="clickable" id="completedReleases">
+                                    <a id="countCompletedRelease" onclick="addReleaseCards('completed');" style="cursor: pointer; color: green;">● 0 Completed Release(s)</a>
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="custom-divider"></div>
+            <!-- Body of card -->
+            <div class="card-body" id="main-content">
+                <div class="container-fluid" id="releaseContainer">
+                    <div class="row" id="releaseRow"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Create Module Modal -->
+    <div class="modal fade" id="modalAddRelease" tabindex="-1" role="dialog" aria-labelledby="modalTitleId" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-scrollable modal-dialog-centered modal-lg" role="document">
+            <div class="modal-content align-items-center" style="color: #232360; font-weight: 900; padding: 0 6%; background-color: #F3F4F8;">
+                <div class="modal-header" style="border-bottom: none;">
+                    <p class="modal-title fs-3" id="modalTitleId">Add Release</p>
+                </div>
+                <div class="modal-body" style="border-bottom: none; width: 100%;">
+                    <div class="row mb-3">
+                        <div>
+                            <label for="release-name">Name <span style="color: #F0270C;">*</span> :</label>
+                            <input type="text" name="release-name" class="form-control" placeholder="Release's Name">
+                            <div id="alertMessageReleaseNameInput" style="display: none; color: red"></div>
+                        </div>
+                    </div>
+                    <div class="row mb-3">
+                        <div>
+                            <label for="release-start-date">Start Date <span style="color: #F0270C;">*</span> :</label>
+                            <div class="input-group">
+                                <div class="input-group-prepend">
+                                    <span class="input-group-text"><i class="fa fa-calendar-check" style="height: 1.5rem;" aria-hidden="true"></i></span>
+                                </div>
+                                <input type="text" name="release-start-date" class="form-control datepicker" placeholder="Select a date">
+                                <div id="alertMessageReleaseStartDateInput" style="display: none; color: red"></div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row mb-3">
+                        <div>
+                            <label for="release-due-date">Due Date <span style="color: #F0270C;">*</span> :</label>
+                            <div class="input-group">
+                                <div class="input-group-prepend">
+                                    <span class="input-group-text"><i class="fa fa-calendar-check" style="height: 1.5rem;" aria-hidden="true"></i></span>
+                                </div>
+                                <input type="text" name="release-due-date" class="form-control datepicker" placeholder="Select a date">
+                                <div id="alertMessageReleaseDueDateInput" style="display: none; color: red"></div>
+                            </div>
+                        </div>
+                        {{!--
+                        <div class="row mt-2">
+                            <div>
+                                <label for="release-attachments">Attachments:</label>
+                                <div id="myDropzone" class="dropzone">
+                                    <div class="dz-message">Drop file here or click to upload...</div>
+                                </div>
+                            </div>
+                        </div>
+                        --}}
+                    </div>
+                </div>
+                <div class="modal-footer" style="border-top: none; align-items: center;">
+                    <button type="button" class="btn btn-primary">Save</button>
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Edit Release Modal -->
+    <div class="modal fade" id="modalEditRelease" tabindex="-1" role="dialog" aria-labelledby="modalTitleEditId" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-scrollable modal-dialog-centered modal-lg" role="document">
+            <div class="modal-content align-items-center" style="color: #232360; font-weight: 900; padding: 0 6%; background-color: #F3F4F8;">
+                <div class="modal-header" style="border-bottom: none;">
+                    <p class="modal-title fs-3" id="modalTitleEditId">Edit Release</p>
+                </div>
+                <div class="modal-body" style="border-bottom: none; width: 100%;">
+                    <div class="row mb-3">
+                        <div>
+                            <label for="release-name-edit">Name <span style="color: #F0270C;">*</span> :</label>
+                            <input type="text" id="release-name-edit" name="release-name-edit" class="form-control" placeholder="Release's Name" disabled>
+                            <div id="alertMessageReleaseNameEditInput" style="display: none; color: red"></div>
+                        </div>
+                    </div>
+                    <div class="row mb-3">
+                        <div class="col">
+                            <label for="release-status-edit">Release Status <span style="color: #F0270C;">*</span> :</label>
+                            <select class="form-select" id="release-status-edit">
+                                <option value="open">Opening</option>
+                                <option value="upcoming">Upcoming</option>
+                                <option value="completed">Completed</option>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer" style="border-top: none; align-items: center;">
+                    <button type="button" class="btn btn-primary" onclick="saveEditedRelease()">Save Changes</button>
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal fade" id="releaseDetailsModal" tabindex="-1" role="dialog" aria-labelledby="releaseDetailsModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="releaseDetailsModalLabel">Release Details</h5>
+                    <button type="button" class="close" data-bs-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <p><strong>Testrun Statics:</strong> <span id="testrunStatics"></span></p>
+                    <p><strong>Testplan Count:</strong> <span id="testplanCount"></span></p>
+                    <p>
+                        <button id="expandTestplans" class="btn btn-link">
+                            <i id="expandIcon" class="bi bi-caret-right-square-fill"></i> Show Testplans
+                        </button>
+                    </p>
+                    <ul id="testplansList" class="d-none"></ul> <!-- Sẽ được ẩn ban đầu -->
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+    {{!-- Page's Functionality Button --}}
+    {{#block "additional-button"}}
+        {{#if permissions.canAdd}}
+        <div class="text-right">
+            <button type="button" class="btn btn-light-green me-2" data-bs-toggle="modal" data-bs-target="#modalAddRelease">
+                <i class="fas fa-plus-circle"></i>  
+                Add Release
+            </button>
+        </div>
+        {{/if}}
+    {{/block}}
+
+    {{!-- Additional Scripts + CSS --}}
+    {{#block "script"}}
+    <!-- jQuery (required for Bootstrap's JavaScript plugins) -->
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+    <!-- Bootstrap Datepicker CSS and JS -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.9.0/css/bootstrap-datepicker.min.css"rel="stylesheet">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.9.0/js/bootstrap-datepicker.min.js"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/dropzone/5.9.2/dropzone.min.css"/>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/dropzone/5.9.2/min/dropzone.min.js"></script>
+
+    <script>
+        const releases = {{{json releases}}};
+
+        function beautifulDate(date) {
+            const d = new Date(date);
+            const month = d.toLocaleString('en-us', { month: 'short' });
+            const day = d.getDate();
+            const year = d.getFullYear();
+            return `${month} ${day}, ${year}`;
+        }
+
+        function showReleaseDetailsModal(release) {
+            const modal = $('#releaseDetailsModal');
+            modal.find('.modal-title').text(release.name + ' Details');
+
+            // Hiển thị thông tin tóm tắt testrun
+            const testrunStats = release.testrunStats;
+            const testrunStaticsText = `Completed: ${testrunStats.completed}, In Progress: ${testrunStats.inProgress}, Not Started: ${testrunStats.notStarted}, New: ${testrunStats.new}`;
+            modal.find('#testrunStatics').text(testrunStaticsText);
+
+            // Hiển thị số lượng testplans
+            modal.find('#testplanCount').text(release.testplans.length);
+
+            // Tạo danh sách testplans
+            const testplansList = release.testplans.map(plan =>
+                `<li><strong>${plan.name}:</strong> ${plan.description}</li>`
+            ).join('');
+
+            // Đặt nội dung vào ul
+            modal.find('#testplansList').html(testplansList);
+
+            // Đặt lại nút mũi tên và danh sách khi mở modal
+            modal.find('#expandIcon').addClass('bi-caret-right-square-fill');
+            modal.find('#expandTestplans').off('click').on('click', function() {
+                const testplansListElement = modal.find('#testplansList');
+                const expandIcon = modal.find('#expandIcon');
+                
+                if (testplansListElement.hasClass('d-none')) {
+                    testplansListElement.removeClass('d-none');
+                    expandIcon.removeClass('bi-caret-right-square-fill').addClass('bi-caret-down-square-fill');
+                    $(this).html('<i class="bi bi-caret-down-square-fill"></i> Hide Testplans');
+                } else {
+                    testplansListElement.addClass('d-none');
+                    expandIcon.removeClass('bi-caret-down-square-fill').addClass('bi-caret-right-square-fill');
+                    $(this).html('<i class="bi bi-caret-right-square-fill"></i> Show Testplans');
+                }
+            });
+
+            modal.modal('show');
+        }
+
+        function fetchReleaseDetails(releaseId) {
+            $.ajax({
+                url: window.location.href + '/getRelease',
+                method: 'GET',
+                data: { releaseId: releaseId },
+                dataType: 'json',
+                success: function(response) {
+                    showReleaseDetailsModal(response.release);
+                },
+                error: function(error) {
+                    console.error('Error fetching release details:', error);
+                    alert('Error fetching release details.');
+                }
+            });
+        }
+
+        $(document).on('click', '.release-card', function() {
+            const releaseId = $(this).data('release-id');
+            fetchReleaseDetails(releaseId);
+        });
+
+        function addReleaseCards(status) {
+            let releasesClone = releases;
+            countOpenRelease.innerHTML = `● ${releases.filter(release => release.release_status === 'open').length} Open Release(s)`;
+            countUpcomingRelease.innerHTML = `● ${releases.filter(release => release.release_status === 'upcoming').length} Upcoming Release(s)`;
+            countCompletedRelease.innerHTML = `● ${releases.filter(release => release.release_status === 'completed').length} Completed Release(s)`;
+
+            switch (status) {
+                case "open":
+                    releasesClone = releases.filter(release => release.release_status === 'open');
+                    break;
+                case "upcoming":
+                    releasesClone = releases.filter(release => release.release_status === 'upcoming');
+                    break;
+                case "completed":
+                    releasesClone = releases.filter(release => release.release_status === 'completed');
+                    break;
+                case "all":
+                    releasesClone = releases;
+                    break;
+                default:
+                    releasesClone = releases;
+                    break;
+            }
+
+            const releaseRow = document.getElementById("releaseRow");
+            releaseRow.innerHTML = "";
+            releasesClone.forEach((release, index) => {
+                const cardCol = document.createElement('div');
+                cardCol.classList.add('col-md-4', 'mb-4');
+
+                const cardElement = document.createElement('div');
+                cardElement.classList.add('card');
+
+                const cardBody = document.createElement('div');
+                cardBody.classList.add('card-body');
+
+                const cardText = document.createElement('p');
+                cardText.classList.add('card-text');
+
+                const cardPinIcon = document.createElement('i');
+                if (release.isPinned) {
+                    cardPinIcon.classList.add('fa', 'fa-thumb-tack');
+                    // icon size 
+                    cardPinIcon.style.color = 'white';
+                    cardPinIcon.style.fontSize = '1.5rem';
+                }
+
+                const backgroundColor = release.release_status == "open" ? 'var(--light-blue)'
+                    : release.release_status == "upcoming" ? 'tan'
+                        : 'var(--light-green)';
+
+                cardElement.classList.add('card', 'text-white', 'px-3');
+                cardElement.style.borderRadius = '1rem';
+                cardElement.style.border = 'none';
+                cardElement.style.backgroundColor = backgroundColor;
+
+                const cardTitle = document.createElement('div');
+                cardTitle.classList.add('card-title');
+
+                cardTitle.style.cursor = 'pointer';
+                cardTitle.addEventListener('click', () => {
+                    fetchReleaseDetails(release.release_id);
+                });
+
+                cardTitle.innerHTML =
+                    `<div class="row">
+                <div class="col-10">
+                    <h5>
+                        <svg width="36" height="35" viewBox="0 0 36 35" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <ellipse cx="18.0846" cy="17.5" rx="17.7657" ry="17.5" fill="#F3F7FD"/>
+                        <path d="M27.3361 15.5419C27.2805 15.3831 27.1793 15.2437 27.0449 15.1405C26.9104 15.0374 26.7484 14.9748 26.5786 14.9605L21.5664 14.2403L19.3201 9.75425C19.248 9.60755 19.1354 9.48382 18.9951 9.39725C18.8549 9.31069 18.6928 9.26477 18.5273 9.26477C18.3618 9.26477 18.1997 9.31069 18.0595 9.39725C17.9193 9.48382 17.8067 9.60755 17.7345 9.75425L15.4883 14.2316L10.4761 14.9605C10.313 14.9833 10.1598 15.0507 10.0336 15.155C9.90753 15.2593 9.81361 15.3963 9.76255 15.5505C9.71582 15.7012 9.71162 15.8616 9.75042 16.0145C9.78922 16.1674 9.86954 16.3069 9.98277 16.4182L13.6208 19.8891L12.7399 24.8176C12.7085 24.9803 12.725 25.1485 12.7874 25.3022C12.8498 25.456 12.9556 25.5889 13.0923 25.6853C13.2255 25.7791 13.3826 25.8345 13.546 25.8452C13.7094 25.856 13.8725 25.8216 14.0172 25.7461L18.5273 23.4293L23.0198 25.7548C23.1434 25.8235 23.2831 25.8593 23.425 25.8589C23.6116 25.8595 23.7936 25.8018 23.9447 25.694C24.0814 25.5976 24.1872 25.4646 24.2496 25.3109C24.3121 25.1571 24.3285 24.989 24.2971 24.8263L23.4162 19.8977L27.0543 16.4269C27.1814 16.3208 27.2754 16.1813 27.3253 16.0246C27.3752 15.8679 27.379 15.7005 27.3361 15.5419ZM21.9187 19.0127C21.8154 19.1111 21.7381 19.2329 21.6936 19.3675C21.6491 19.5022 21.6386 19.6455 21.6633 19.7849L22.2975 23.4206L18.9854 21.6852C18.8579 21.6184 18.7158 21.5834 18.5714 21.5834C18.427 21.5834 18.2848 21.6184 18.1574 21.6852L14.8452 23.4206L15.4795 19.7849C15.5041 19.6455 15.4937 19.5022 15.4491 19.3675C15.4046 19.2329 15.3273 19.1111 15.224 19.0127L12.5814 16.4096L16.2899 15.8803C16.4326 15.8607 16.5682 15.807 16.685 15.7238C16.8017 15.6406 16.8959 15.5304 16.9594 15.403L18.5273 12.0971L20.1834 15.4117C20.2468 15.5391 20.3411 15.6492 20.4578 15.7324C20.5745 15.8157 20.7101 15.8694 20.8528 15.8889L24.5614 16.4182L21.9187 19.0127Z" fill="#6B95D6"/>
+                        </svg>
+                        ${release.name}
+                    </h5>
+                </div>
+                <div class="col-2 d-flex justify-content-end">
+                    <button class="btn" style="background-color: transparent; border: none;">
+                        ${cardPinIcon.outerHTML}
+                    </button>
+                </div>
+            </div>
+            `;
+
+                cardText.innerHTML = `
+            <div style="">Release Key: 
+                <button type="button" class="btn btn-key me-2" data-bs-toggle="modal" data-bs-target="#addReleaseModal1">
+                    ${release.release_key}
+                </button></div>
+            <div style="">Start date: ${beautifulDate(release.start_date)}</div>
+            <div style="">Due date: ${beautifulDate(release.due_date)}</div>
+            <div class="mt-2"style="color: #232360"><strong>${Math.round(release.release_progress * 100)}% complete</strong></div>
+            <div class="col mt-3">
+                <div class="progress progress-sm mr-2" style="height: 5px;">
+                    <div class="progress-bar" role="progressbar"
+                        style="width: ${Math.round(release.release_progress * 100)}%; background-color: #232360;" aria-valuenow="50" aria-valuemin="0"
+                        aria-valuemax="100"></div>
+                </div>
+            </div>
+            `;
+
+            // if permissions.canEdit is true, show the edit button
+            if ({{permissions.canEdit}} && {{permissions.canDelete}}) {
+                cardText.innerHTML += `
+                <div class="col d-flex justify-content-end mt-2">
+                    <button class="btn edit-release-btn" data-release-id="${release.release_id}" data-bs-toggle="modal" data-bs-target="#modalEditRelease">
+                        <i class="fas fa-edit"></i> Edit
+                    </button>
+                    <button class="btn delete-release-btn" data-release-id="${release.release_id}">
+                        <i class="fas fa-trash"></i> Delete
+                    </button>
+                </div>
+                `;
+            }
+
+            // Thêm các phần tử vào trong nhau theo cấu trúc của card
+            cardBody.appendChild(cardTitle);
+            cardBody.appendChild(cardText);
+
+            cardElement.appendChild(cardBody);
+            cardCol.appendChild(cardElement);
+
+            // Thêm card vào trong releaseRow
+            releaseRow.appendChild(cardCol);
+        });
+        }
+
+        addReleaseCards("all");
+
+        $(document).ready(function () {
+            $(".datepicker").datepicker({
+                format: "yyyy-mm-dd",
+                todayHighlight: true,
+                autoclose: true
+            });
+
+            $(".requirement-item input[type=checkbox]").on("change", function () {
+                let count = 0;
+                $(".requirement-item input[type=checkbox]").each(function () {
+                    if ($(this).is(":checked")) {
+                        count++;
+                    }
+                });
+                $(".requirement-item input[type=checkbox]").prop("checked", false);
+                $(this).prop("checked", true);
+            });
+        });
+
+        document.addEventListener('DOMContentLoaded', () => {
+            const addReleaseUrl = `${window.location.href}/addRelease`;
+
+            // Add event listener for the "Save" button in the modal
+            document.querySelector('#modalAddRelease .btn-primary').addEventListener('click', () => {
+                const releaseName = document.querySelector('input[name="release-name"]').value;
+                const startDate = document.querySelector('input[name="release-start-date"]').value;
+                const dueDate = document.querySelector('input[name="release-due-date"]').value;
+
+                // Validate inputs (optional)
+                if (!releaseName.trim()) {
+                    document.getElementById('alertMessageReleaseNameInput').textContent = 'Release name is required.';
+                    document.getElementById('alertMessageReleaseNameInput').style.display = 'block';
+                    return;
+                }
+
+                if (!startDate.trim()) {
+                    document.getElementById('alertMessageReleaseStartDateInput').textContent = 'Start date is required.';
+                    document.getElementById('alertMessageReleaseStartDateInput').style.display = 'block';
+                    return;
+                }
+
+                if (!dueDate.trim()) {
+                    document.getElementById('alertMessageReleaseDueDateInput').textContent = 'Due date is required.';
+                    document.getElementById('alertMessageReleaseDueDateInput').style.display = 'block';
+                    return;
+                }
+
+                // Get project ID from one of release of releases variable, if not available, get from the URL
+                const projectId = releases.length > 0 ? releases[0].project_id : window.location.href.split('/').pop();
+
+                // Prepare data for POST request
+                const newRelease = {
+                    releaseName: releaseName,
+                    startDate: startDate,
+                    dueDate: dueDate
+                };
+
+                // Send POST request to add release
+                fetch(addReleaseUrl, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify(newRelease)
+                })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.success) {
+                        location.reload(); // Reload the page after successful addition (or update UI as needed)
+                    } else {
+                        alert(data.error); // Display error message if addition fails
+                        document.getElementById('alertMessageReleaseNameInput').textContent = data.message; // Display error message if failed
+                        document.getElementById('alertMessageReleaseNameInput').style.display = 'block';
+                    }
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                    document.getElementById('alertMessageReleaseNameInput').textContent = 'An error occurred. Please try again.'; // Handle error case
+                    document.getElementById('alertMessageReleaseNameInput').style.display = 'block';
+                });
+            });
+        });
+
+        // JavaScript for Edit Release Modal
+        $(document).on('click', '.edit-release-btn', function() {
+            const releaseId = $(this).data('release-id');
+            const release = releases.find(r => r.release_id === releaseId);
+
+            if (release) {
+                // Populate modal fields with existing release data
+                $('#release-name-edit').val(release.name);
+                $('#release-status').val(release.release_status);
+            }
+
+            // Store the release ID in the Save Changes button
+            $('.btn-primary', '#modalEditRelease').data('release-id', releaseId);
+        });
+
+        function saveEditedRelease() {
+            const releaseId = $('.btn-primary', '#modalEditRelease').data('release-id');
+            // Get the value from the Release Status dropdown
+            const releaseStatus = document.getElementById('release-status').value;
+
+            // Prepare data for PUT request to update release
+            const updatedRelease = {
+                releaseId: releaseId, // ID of the release to update
+                release_status: releaseStatus // New release status
+            };
+
+            // Send PUT request to update release
+            fetch(`${window.location.href}/editRelease`, {
+                method: 'PUT',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(updatedRelease)
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    location.reload(); // Reload the page after successful update
+                } else {
+                    alert(data.error); // Display error message if update fails
+                    document.getElementById('alertMessageReleaseNameInput').textContent = data.message; // Display error message if failed
+                    document.getElementById('alertMessageReleaseNameInput').style.display = 'block';
+                }
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                document.getElementById('alertMessageReleaseNameInput').textContent = 'An error occurred. Please try again.'; // Handle error case
+                document.getElementById('alertMessageReleaseNameInput').style.display = 'block';
+            });
+        }
+
+        // Add event listener for delete release button
+        $(document).on('click', '.delete-release-btn', function() {
+            const releaseId = $(this).data('release-id');
+            const confirmation = confirm('Are you sure you want to delete this release?');
+
+            if (confirmation) {
+                deleteRelease(releaseId);
+            }
+        });
+
+        // Function to send DELETE request to delete a release
+        function deleteRelease(releaseId) {
+            const deleteUrl = `${window.location.href}/deleteRelease`;
+
+            // Prepare data for DELETE request
+            const deleteData = {
+                releaseId: releaseId
+            };
+
+            // Send DELETE request to delete release
+            fetch(deleteUrl, {
+                method: 'DELETE',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(deleteData)
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    location.reload(); // Reload the page after successful deletion
+                } else {
+                    alert(data.error); // Display error message if deletion fails
+                }
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                alert('An error occurred. Please try again.'); // Handle error case
+            });
+        }
+
+    </script>
+    {{/block}}
+</body>
+</html>

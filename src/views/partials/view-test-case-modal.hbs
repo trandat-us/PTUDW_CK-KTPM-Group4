@@ -1,0 +1,167 @@
+<div class="modal fade" id="view-test-case" tabindex="-1" role="dialog" aria-labelledby="modalTitleId"
+    aria-hidden="true" data-testplan-code="">
+    <div class="modal-dialog modal-dialog-scrollable modal-dialog-centered modal-xl" role="document">
+        <div class="modal-content align-items-center"
+            style="color: #232360; font-weight: 900; padding: 0 6%; background-color: #F3F4F8;">
+            <div class="modal-header" style="border-bottom: none;">
+                <p class="modal-title fs-3" id="modalTitleId">
+                    Test case Information
+                </p>
+            </div>
+            <div class="modal-body" style="border-bottom: none; width: 100%;">
+                <div class="d-flex align-items-start">
+                    <div class="nav flex-column nav-pills me-3" id="v-pills-view-tab" role="tablist"
+                        aria-orientation="vertical">
+                        <button class="nav-link active" id="v-pills-view-index-tab" data-bs-toggle="pill"
+                            data-bs-target="#v-pills-view-index" type="button" role="tab" aria-controls="v-pills-view-index"
+                            aria-selected="true">Overview</button>
+                        <button class="nav-link" id="v-pills-view-step-tab" data-bs-toggle="pill"
+                            data-bs-target="#v-pills-view-step" type="button" role="tab" aria-controls="v-pills-view-step"
+                            aria-selected="false">Steps</button>
+                        <button class="nav-link" id="v-pills-view-testcase-tab" data-bs-toggle="pill"
+                            data-bs-target="#v-pills-view-testcase" type="button" role="tab" aria-controls="v-pills-view-testcase"
+                            aria-selected="false">Testcase linking</button>
+                        <button class="nav-link" id="v-pills-view-requirement-tab" data-bs-toggle="pill"
+                            data-bs-target="#v-pills-view-requirement" type="button" role="tab"
+                            aria-controls="v-pills-view-requirement" aria-selected="false">Requirement linking</button>
+                    </div>
+                    <div style="width: 20px;"></div>
+                    <div class="tab-content flex-grow-1" id="v-pills-view-tabContent">
+                        <div class="tab-pane fade show active" id="v-pills-view-index" role="tabpanel"
+                            aria-labelledby="v-pills-view-index-tab" tabindex="0">
+                            <div class="row mb-3">
+                                <div class="col-4">
+                                    <label for="test-case-name">
+                                        Testcase Name:
+                                    </label>
+                                </div>
+                                <div class="col-6 offset-2">
+                                    <input id="test-case-name" type="text" name="test-case-name" class="form-control"
+                                        placeholder="Testcase name" disabled>
+                                </div>
+                            </div>
+                            <div class="row mb-3">
+                                <div class="col-4">
+                                    <label for="test-case-module">
+                                        Module:
+                                    </label>
+                                </div>
+                                <div class="col-6 offset-2">
+                                    <input id="test-case-module" type="text" name="test-case-name" class="form-control"
+                                        placeholder="Testcase name" disabled>
+                                </div>
+                            </div>
+                            <div class="row mb-3">
+                                <div class="col-4">
+                                    <label for="test-case-creator">
+                                        Created By:
+                                    </label>
+                                </div>
+                                <div class="col-6 offset-2">
+                                    <input id="test-case-creator" type="text" name="test-case-name" class="form-control"
+                                        placeholder="created-by" disabled>
+                                </div>
+                            </div>
+                            <div class="row mb-3">
+                                <div class="col-4">
+                                    <label for="test-case-created-date">
+                                        Created Date:
+                                    </label>
+                                </div>
+                                <div class="col-6 offset-2">
+                                    <input id="test-case-created-date" type="text" name="test-case-name" class="form-control"
+                                        placeholder="created-date" disabled>
+                                </div>
+                            </div>
+                            <div class="row mb-3">
+                                <div class="col-4">
+                                    <label for="test-case-updated-date">
+                                        Updated Date:
+                                    </label>
+                                </div>
+                                <div class="col-6 offset-2">
+                                    <input id="test-case-updated-date" type="text" name="test-case-name" class="form-control"
+                                        placeholder="updated-date" disabled>
+                                </div>
+                            </div>
+                            <div class="row mb-3">
+                                <div>
+                                    <label for="test-case-description">
+                                        Testcase Description:
+                                    </label>
+                                    <textarea id="test-case-description" name="test-case-description"
+                                        class="form-control" placeholder="Testcase description" rows="5"
+                                        disabled></textarea>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="tab-pane fade" id="v-pills-view-step" role="tabpanel" aria-labelledby="v-pills-view-step-tab"
+                            tabindex="0">
+                            <div style="width: 100%; background-color: #FFFFFF; border-radius: 10px;">
+                                <div class="table-responsive">
+                                    <table class="table">
+                                        <thead>
+                                            <th class="col-2">Step Number</th>
+                                            <th class="col-4 offset-1">Step Description</th>
+                                            <th class="col-4 offset-1">Expected Result</th>
+                                        </thead>
+                                        <tbody class="test-case-step-body-table">
+
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="tab-pane fade" id="v-pills-view-testcase" role="tabpanel"
+                            aria-labelledby="v-pills-view-testcase-tab" tabindex="0">
+                            <div style="width: 100%; background-color: #FFFFFF; border-radius: 10px;">
+                                <div class="table-responsive">
+                                    <table class="table">
+                                        <thead>
+                                            <th class="col-4">Testcase Code</th>
+                                            <th class="col-6 offset-2">Testcase Title</th>
+                                        </thead>
+                                        <tbody class="test-case-linking-testcases-body-table">
+                                            {{!-- {{#each showTestcases}}
+                                            <tr>
+                                                <td>{{this.testcase_id}}</td>
+                                                <td>{{this.name}}</td>
+                                            </tr>
+                                            {{/each}} --}}
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="tab-pane fade" id="v-pills-view-requirement" role="tabpanel"
+                            aria-labelledby="v-pills-view-requirement-tab" tabindex="0">
+                                                        <div style="width: 100%; background-color: #FFFFFF; border-radius: 10px;">
+                                <div class="table-responsive">
+                                    <table class="table">
+                                        <thead>
+                                            <th class="col-4">Requirement Code</th>
+                                            <th class="col-6 offset-2">Requirement Title</th>
+                                        </thead>
+                                        <tbody class="test-case-linking-requirements-body-table">
+                                            {{!-- {{#each showRequirements}}
+                                            <tr>
+                                                <td>{{this.requirement_id}}</td>
+                                                <td>{{this.name}}</td>
+                                            </tr>
+                                            {{/each}} --}}
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer" style="border-top: none;">
+                <button type="button" class="btn btn-success" data-bs-dismiss="modal">
+                    Done
+                </button>
+            </div>
+        </div>
+    </div>
+</div>

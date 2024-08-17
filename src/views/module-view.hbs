@@ -1,0 +1,484 @@
+<link href="https://cdn.lineicons.com/4.0/lineicons.css" rel="stylesheet">
+<link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet">
+
+<div class="container-fluid mt-3">
+    <div class="row">
+        <div class="col-sm-4">
+            <div class="modules-level-1 card custom-card">
+                <!-- Header của card -->
+                <div class="card-header bg-white border-0 align-items-center">
+                    <div class="row">
+                        <div class="col">
+                            <h3 class="card-title">Modules</h3>
+                        </div>
+                    </div>
+                </div>
+                <div class="custom-divider"></div>
+                <!-- Nội dung (body) của card -->
+                <div class="card-body p-0">
+                    <div id="modulesLevel1" class="d-flex flex-column gap-3 modules-list px-4 py-3" style="color: #232360; font-weight: 700; font-size: 1.1rem;">
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-sm-4">
+            <div class="modules-level-2 card custom-card">
+                <!-- Header của card -->
+                <div class="card-header bg-white border-0 align-items-center">
+                    <div class="row">
+                        <div class="col">
+                            <h3 class="card-title">Sub Modules</h3>
+                        </div>
+                    </div>
+                </div>
+                <div class="custom-divider"></div>
+                <!-- Nội dung (body) của card -->
+                <div class="card-body p-0">
+                    <div id="modulesLevel2" class="d-flex flex-column gap-3 modules-list px-4 py-3" style="color: #232360; font-weight: 700; font-size: 1.1rem;">
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-sm-4">
+            <div class="modules-level-3 card custom-card">
+                <!-- Header của card -->
+                <div class="card-header bg-white border-0 align-items-center">
+                    <div class="row">
+                        <div class="col">
+                            <h3 class="card-title">SubSub Modules</h3>
+                        </div>
+                    </div>
+                </div>
+                <div class="custom-divider"></div>
+                <!-- Nội dung (body) của card -->
+                <div class="card-body p-0">
+                    <div id="modulesLevel3" class="d-flex flex-column gap-3 modules-list px-4 py-3" style="color: #232360; font-weight: 700; font-size: 1.1rem;">
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+{{!-- Create Module Modal --}}
+<div class="modal fade" id="modalAddModules" tabindex="1" role="dialog" aria-labelledby="modalTitleId" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-scrollable modal-dialog-centered modal-lg" role="document">
+        <div class="modal-content align-items-center" style="color: #232360; font-weight: 900; padding: 0 6%; background-color: #F3F4F8;">
+            <div class="modal-header" style="border-bottom: none;">
+                <p class="modal-title fs-3" id="modalTitleId">Add Modules</p>
+            </div>
+            <div class="modal-body" style="border-bottom: none; width: 100%;">
+                <div class="row mb-3">
+                    <div>
+                        <label for="description">Select Root Module:</label>
+                        <select name="module-selection" class="form-select overflow-y">
+                        </select>
+                    </div>
+                </div>
+                <div class="row mb-3">
+                    <div>
+                        <label for="modules-name">Modules Name<span style="color: red">*</span>:</label>
+                        <input type="text" class="form-control" name="modules-name" id="modules-name" placeholder="Enter Module Name" required>
+                        <div id="alertMessage" style="display: none; color: red"></div>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer" style="border-top: none; align-items: center;">
+                <button type="button" class="btn btn-primary">Save</button>
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Edit/Delete Module Modal -->
+<div class="modal fade" id="modalEditDeleteModules" tabindex="-1" role="dialog" aria-labelledby="modalTitleId" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-scrollable modal-dialog-centered modal-lg" role="document">
+        <div class="modal-content align-items-center" style="color: #232360; font-weight: 900; padding: 0 6%; background-color: #F3F4F8;">
+            <div class="modal-header" style="border-bottom: none;">
+                <p class="modal-title fs-3" id="modalTitleId">Edit/Delete Module</p>
+            </div>
+            <div class="modal-body" style="border-bottom: none; width: 100%;">
+                <div class="row mb-3">
+                    <div>
+                        <label for="editDeleteModuleSelection">Select Module:</label>
+                        <select id="editDeleteModuleSelection" class="form-select overflow-y">
+                            <!-- Options will be populated dynamically -->
+                        </select>
+                    </div>
+                </div>
+                <div class="row mb-3">
+                    <div>
+                        <label for="editDeleteOption">Option:</label>
+                        <select id="editDeleteOption" class="form-select">
+                            <option value="delete">Delete</option>
+                            <option value="edit">Edit</option>
+                        </select>
+                    </div>
+                </div>
+                <div id="editModuleFields" style="display: none;">
+                    <div class="row mb-3">
+                        <div>
+                            <label for="editModuleName">New Module Name<span style="color: red">*</span>:</label>
+                            <input type="text" class="form-control" name="editModuleName" id="editModuleName" placeholder="Enter Module Name">
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer" style="border-top: none; align-items: center;">
+                <button type="button" id="saveEditDeleteChanges" class="btn btn-primary">Save Changes</button>
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Toast Container -->
+<div id="toastContainer" class="toast-container position-fixed bottom-0 end-0 p-3" style="z-index: 11">
+</div>
+
+
+{{!-- Page's Functionality Button --}}
+{{#block "additional-button"}}
+{{#if permissions.canAdd}}
+<div class="text-right">
+    <button type="button" class="btn btn-light-green me-2" data-bs-toggle="modal" data-bs-target="#modalAddModules">
+        <i class="fas fa-plus-square"></i>  
+        Add Modules
+    </button>
+    <button type="button" class="btn btn-light-green me-2" data-bs-toggle="modal" data-bs-target="#modalEditDeleteModules">
+        <i class="bi bi-pencil-square"></i>  
+        Edit/Delete
+    </button>
+</div>
+{{/if}}
+{{/block}}
+
+{{!-- Additional Scripts + CSS --}}
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/dropzone/5.9.2/dropzone.min.css" />
+<script src="/js/addModuleModal.js"></script>
+
+<script>
+    const modules = {{{modules}}};
+
+    function displayModules(rootModuleName, modules, containerId, onClickFunction) {
+        const container = document.getElementById(containerId);
+        container.innerHTML = '';
+
+        if (containerId === 'modulesLevel2') {
+            document.querySelector('.modules-level-2 .card-title').textContent = rootModuleName;
+            document.querySelector('.modules-level-3 .card-title').textContent = 'SubSub Modules';
+        } else if (containerId === 'modulesLevel3') {
+            document.querySelector('.modules-level-3 .card-title').textContent = rootModuleName;
+        }
+
+        if (!modules || modules.length === 0) {
+            const emptyModuleItem = document.createElement('div');
+            emptyModuleItem.className = 'card';
+            emptyModuleItem.style = 'border: 2px dashed #000;';
+            
+            const cardBody = document.createElement('div');
+            cardBody.className = 'card-body d-flex align-items-center justify-content-center';
+            cardBody.textContent = 'No modules found.';
+
+            emptyModuleItem.appendChild(cardBody);
+            container.appendChild(emptyModuleItem);
+        } else {
+            modules.forEach(module => {
+                const moduleItem = document.createElement('div');
+                moduleItem.className = 'module-item';
+                moduleItem.innerHTML = `<i class="fa fa-folder-open"></i> ${module.name}`;
+                moduleItem.onclick = () => onClickFunction(module.module_id, module.level);
+                container.appendChild(moduleItem);
+            });
+        }
+    }
+
+    function getSubModules(rootModuleId) {
+        let subModules = [];
+        let rootModuleName = '';
+        function findSubModules(currentModule) {
+            if (currentModule.module_id === rootModuleId) {
+                subModules = currentModule.children;
+                rootModuleName = currentModule.name;
+                return;
+            } else {
+                currentModule.children.forEach(childModule => {
+                    findSubModules(childModule);
+                });
+            }
+        }
+        if (rootModuleId === 0) {
+            return modules;
+        } else {
+            modules.forEach(module => {
+                findSubModules(module);
+            });
+        }
+        return { rootname: rootModuleName, children: subModules };
+    }
+
+    function bindingSubModule(module_id, level) {
+        const subModules = getSubModules(module_id);
+        displayModules(subModules.rootname, subModules.children, 'modulesLevel2', bindingSubSubModule);
+        document.getElementById('modulesLevel3').innerHTML = '';
+    }
+
+    function bindingSubSubModule(module_id, level) {
+        const subSubModules = getSubModules(module_id);
+        displayModules(subSubModules.rootname, subSubModules.children, 'modulesLevel3', () => {});
+    }
+
+    // Initialize root modules
+    const rootModules = getSubModules(0);
+    displayModules('Modules', rootModules, 'modulesLevel1', bindingSubModule);
+
+    function populateRootModuleOptions(modules) {
+        const selectElement = document.querySelector('select[name="module-selection"]');
+        selectElement.innerHTML = ''; // Clear existing options
+
+        function createOption(module, prefix = '') {
+            const option = document.createElement('option');
+            option.value = module.module_id;
+            option.textContent = `${prefix}${module.name}`;
+            return option;
+        }
+
+        function addOptions(modules, prefix = '') {
+            modules.forEach(module => {
+                if (module.level !== 3) { // Exclude modules with level 3
+                    selectElement.appendChild(createOption(module, prefix));
+                    if (module.children && module.children.length > 0) {
+                        addOptions(module.children, `${prefix}${module.name}/`);
+                    }
+                }
+            });
+        }
+
+        selectElement.appendChild(createOption({ module_id: 0, name: '/' }));
+        addOptions(modules);
+    }
+
+    document.addEventListener('DOMContentLoaded', () => {
+        const addModuleUrl = `${window.location.href}/addModule`;
+        const modules = {{{modules}}};
+
+        populateRootModuleOptions(modules);
+
+        document.querySelector('#modalAddModules .btn-primary').addEventListener('click', () => {
+            const moduleName = document.querySelector('#modules-name').value;
+            const rootModuleId = document.querySelector('select[name="module-selection"]').value;
+
+            if (!moduleName.trim()) {
+                document.getElementById('alertMessage').textContent = 'Module name is required.';
+                document.getElementById('alertMessage').style.display = 'block';
+                return;
+            }
+
+            let parentLevel = 0;
+            if (rootModuleId) {
+                const parentModule = findModuleById(modules, parseInt(rootModuleId));
+                parentLevel = parentModule ? parentModule.level : 0;
+            }
+
+            const newModule = {
+                name: moduleName,
+                root_module_id: rootModuleId ? parseInt(rootModuleId) : null,
+                level: parentLevel + 1
+            };
+
+            fetch(addModuleUrl, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(newModule)
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    localStorage.setItem('toastMessage', JSON.stringify({
+                        title: 'Success',
+                        message: 'Module added successfully!',
+                        className: 'bg-success'
+                    }));
+                    location.reload();
+                } else {
+                    showToast('Error', data.error, 'bg-danger');
+                }
+            })
+            .catch(error => {
+                showToast('Error', 'An error occurred. Please try again.', 'bg-danger');
+            });
+        });
+
+        function findModuleById(modules, id) {
+            let foundModule = null;
+
+            function searchModules(modules) {
+                for (const module of modules) {
+                    if (module.module_id === id) {
+                        foundModule = module;
+                        return;
+                    } else if (module.children && module.children.length > 0) {
+                        searchModules(module.children);
+                    }
+                }
+            }
+
+            searchModules(modules);
+            return foundModule;
+        }
+
+        $(document).ready(function() {
+            const modules = {{{modules}}};
+            populateModuleSelection(modules);
+
+            function populateModuleSelection(modules) {
+                const selectElement = document.getElementById('editDeleteModuleSelection');
+                selectElement.innerHTML = ''; // Clear existing options
+
+                function createOption(module, prefix = '') {
+                    const option = document.createElement('option');
+                    option.value = module.module_id;
+                    option.textContent = `${prefix}${module.name}`;
+                    return option;
+                }
+
+                function addOptions(modules, prefix = '') {
+                    modules.forEach(module => {
+                        selectElement.appendChild(createOption(module, prefix));
+                        if (module.children && module.children.length > 0) {
+                            addOptions(module.children, `${prefix}${module.name}/`);
+                        }
+                    });
+                }
+
+                addOptions(modules);
+            }
+
+            // Handle option change
+            $('#editDeleteOption').on('change', function() {
+                const selectedOption = $(this).val();
+
+                if (selectedOption === 'edit') {
+                    $('#editModuleFields').show();
+                } else {
+                    $('#editModuleFields').hide();
+                }
+            });
+
+            // Save changes button click
+            $('#saveEditDeleteChanges').on('click', function() {
+                const selectedModuleId = $('#editDeleteModuleSelection').val();
+                const selectedOption = $('#editDeleteOption').val();
+                const editModuleName = $('#editModuleName').val();
+
+                if (selectedOption === 'edit') {
+                    // Handle edit operation
+                    const updatedModule = {
+                        module_id: parseInt(selectedModuleId),
+                        name: editModuleName
+                    };
+
+                    // using ajax
+                    $.ajax({
+                        url: `${window.location.href}/editModule?moduleId=${selectedModuleId}`,
+                        type: 'PUT',
+                        data: updatedModule,
+                        success: function(response) {
+                            if (response.success) {
+                                localStorage.setItem('toastMessage', JSON.stringify({
+                                    title: 'Success',
+                                    message: 'Module updated successfully!',
+                                    className: 'bg-success'
+                                }));
+                                location.reload();
+                            } else {
+                                showToast('Error', response.error, 'bg-danger');
+                            }
+                        },
+                        error: function(error) {
+                            showToast('Error', 'An error occurred. Please try again.', 'bg-danger');
+                        }
+                    });
+
+                    // Implement your edit module logic here (e.g., fetch POST request)
+                    console.log('Editing module:', updatedModule);
+                } else if (selectedOption === 'delete') {
+                    // Handle delete operation
+                    const confirmed = confirm('Are you sure you want to delete this module?');
+
+                    if (confirmed) {
+                        // Implement your delete module logic here (e.g., fetch DELETE request)
+                        console.log('Deleting module with ID:', selectedModuleId);
+
+                        // using ajax
+                        $.ajax({
+                            url: `${window.location.href}/deleteModule?moduleId=${selectedModuleId}`,
+                            type: 'DELETE',
+                            data: {
+                                module_id: selectedModuleId
+                            },
+                            success: function(response) {
+                                if (response.success) {
+                                    localStorage.setItem('toastMessage', JSON.stringify({
+                                        title: 'Success',
+                                        message: 'Module deleted successfully!',
+                                        className: 'bg-success'
+                                    }));
+                                    location.reload();
+                                } else {
+                                    showToast('Error', response.error, 'bg-danger');
+                                }
+                            },
+                            error: function(error) {
+                                showToast('Error', 'An error occurred. Please try again.', 'bg-danger');
+                            }
+                        });
+                    }
+                }
+
+                // Optionally, close the modal after operation
+                $('#modalEditDeleteModules').modal('hide');
+            });
+        });
+
+        function showToast(title, message, className) {
+            const toastContainer = document.getElementById('toastContainer');
+            const toastElement = document.createElement('div');
+            toastElement.className = `toast align-items-center text-white ${className} border-0`;
+            toastElement.role = 'alert';
+            toastElement.ariaLive = 'assertive';
+            toastElement.ariaAtomic = 'true';
+
+            toastElement.innerHTML = `
+                <div class="d-flex">
+                    <div class="toast-body">
+                        <strong>${title}</strong>: ${message}
+                    </div>
+                    <button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast" aria-label="Close"></button>
+                </div>
+            `;
+
+            toastContainer.appendChild(toastElement);
+
+            const toast = new bootstrap.Toast(toastElement);
+            toast.show();
+
+            toastElement.addEventListener('hidden.bs.toast', () => {
+                toastElement.remove();
+            });
+        }
+
+        // Check if there is a toast message in localStorage
+        const toastMessage = localStorage.getItem('toastMessage');
+        if (toastMessage) {
+            const { title, message, className } = JSON.parse(toastMessage);
+            showToast(title, message, className);
+            localStorage.removeItem('toastMessage');
+        }
+    });
+</script>

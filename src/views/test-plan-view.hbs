@@ -1,0 +1,117 @@
+<div class="main-area">
+    <div class="container py-3 my-3"
+        style="background-color: white; border-radius: 5px; height: 70vh; min-height: 647px; margin-top: 1%;">
+        <div class="d-flex justify-content-between align-items-center" style="padding: 0 12px;">
+            <p class="" style="font-weight: 600; font-size: 1.2rem; color: #232360; margin-bottom: 0;">Test
+                plan</p>
+            <div class="dropdown-open" style="background-color: #F1F1F1; border-radius: 5px;">
+                <button class="btn" type="button" id="triggerId" data-bs-toggle="dropdown" aria-haspopup="true"
+                    aria-expanded="false" style="background-color: #F1F1F1; border: none; color: #969696;">
+                    <span style="padding-right: 30px;">Search by release</span>
+                    <i class="bi bi-caret-down-fill" style="opacity: 100%;"></i>
+                </button>
+                <div class="dropdown-menu release-dropdown-menu" aria-labelledby="triggerId">
+                    {{#each releases}}
+                    <button class="dropdown-item release-item" data-name="{{release_id}}" href="#">{{name}}</button>
+                    {{/each}}
+                </div>
+            </div>
+        </div>
+        <div class="table-responsive px-5 mt-4" style="height: 537px;">
+            <table class="table">
+                <thead class="fs-6">
+                    <th class="plan-code-col col-1" scope="col">Plan's Code</th>
+                    <th class="test-plan-name-col col-2" scope="col">Plan's Name</th>
+                    <th class="test-description-col col-6" scope="col">Description</th>
+                    <th class="release-col col-2" scope="col">Release</th>
+                    <th scope="col col-1">Action</th>
+                </thead>
+                <tbody class="fs-6">
+                    {{#each testPlans}}
+                    <tr>
+                        <td class="test-plan-code">{{this.code}}</td>
+                        <td class="test-plan-name">{{this.name}}</td>
+                        <td class="test-plan-description">{{this.description}}</td>
+                        <td class="release" data-release-id="{{release_id}}">{{this.release}}</td>
+                        <td style="font-weight: 600;">
+                            <i class="bi bi-eye hover-icon" style="margin-right: 20px;" data-bs-toggle="tooltip"
+                                data-bs-placement="top" data-bs-title="Detail"></i>
+                            <i class="bi bi-pencil hover-icon text-success" style="margin-right: 20px;"
+                                data-bs-toggle="tooltip" data-bs-placement="top" data-bs-title="Edit testplan"></i>
+                            <i class="bi bi-trash hover-icon text-danger" data-bs-toggle="tooltip"
+                                data-bs-placement="top" data-bs-title="Delete testplan"></i>
+                        </td>
+                    </tr>
+                    {{/each}}
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <nav style="margin: 0 auto;">
+            {{{paginate pagination
+                paginationClass="pagination justify-content-center p-1"
+                leftText = '<i class="bi bi-arrow-left"></i>'
+                rightText = '<i class="bi bi-arrow-right"></i>'
+            }}}
+        </nav>
+    </div>
+</div>
+
+{{!-- Create Testplan Modal --}}
+
+{{#block "modal"}}
+{{> create-test-plan-modal}}
+{{> edit-test-plan-modal}}
+{{> delete-test-plan-modal}}
+{{> view-test-plan-modal}}
+{{/block}}
+
+{{!-- Additional button in view --}}
+
+{{#block "additional-button"}}
+<button
+    style="background-color: #50DF89; padding: 10px; font-weight: 600; font-size: 1.2rem; border: none; border-radius: 10px;  color: #23235F;"
+    data-bs-toggle="modal" data-bs-target="#modalId" class="Add-test-plan-btn">
+    <i class="bi bi-plus-circle"></i>
+    <span class="btn-text"> Add Plan </span>
+</button>
+{{/block}}
+
+{{!-- Additional Scripts --}}
+
+{{#block "script"}}
+
+<script>
+    const permissions = {{{json permissions}}};
+
+    console.log(permissions);
+
+    function canEditTestplan() {
+        return permissions.canEdit;
+    }
+
+    function canDeleteTestplan() {
+        return permissions.canDelete;
+    }
+
+    function canViewTestplan() {
+        return permissions.canView;
+    }
+
+    function canAddTestplan() {
+        return permissions.canAdd;
+    }
+
+    if (!canAddTestplan()) {
+        document.querySelector('.Add-test-plan-btn').style.display = 'none';
+    }
+
+
+</script>
+
+<script src="/js/addTestplanModal.js"></script>
+<script src="/js/testplanActionBtn.js"></script>
+
+{{/block}}
+

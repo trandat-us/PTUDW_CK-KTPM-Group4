@@ -1,0 +1,16 @@
+{
+    "database": "postgres",
+    "username": "postgres",
+    "password": "postgre",
+    "host": "127.0.0.1",
+    "port": 5432,
+    "dialect": "postgres",
+    "dialectOptions": {
+      "ssl": false,
+      "connectTimeout": 60000 
+    },
+    "seederStorage": "json",
+    "seederStoragePath": "seeders",
+    "schema": "public" 
+}
+  
